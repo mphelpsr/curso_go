@@ -2,28 +2,33 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 )
 
 func main() {
 
 	exibeIntroducao()
-	exibeMenu()
 
-	comando := leComando()
+	for {
+		exibeMenu()
 
-	switch comando {
-	case 1:
-		fmt.Println("Monitorando...")
-	case 2:
-		fmt.Println("Exibindo logs...")
-	case 0:
-		fmt.Println("Saindo do programa...")
-		os.Exit(0)
+		comando := leComando()
 
-	default:
-		fmt.Println("Nao conheço esse comando")
-		os.Exit(-1)
+		switch comando {
+		case 1:
+			iniciarMonitoramento()
+		case 2:
+			fmt.Println("Exibindo logs...")
+		case 0:
+			fmt.Println("Saindo do programa...")
+			os.Exit(0)
+
+		default:
+			fmt.Println("Nao conheço esse comando")
+			os.Exit(-1)
+		}
+
 	}
 
 }
@@ -46,4 +51,16 @@ func leComando() int {
 	fmt.Scan(&comandoLido)
 	fmt.Println("O valor da variavel comando é: ", comandoLido)
 	return comandoLido
+}
+
+func iniciarMonitoramento() {
+	fmt.Println("Monitorando...")
+	site := "https://www.caribenordestino.com.br/teste"
+	resp, _ := http.Get(site)
+
+	if resp.StatusCode == 200 {
+		fmt.Println("Site:", site, "foi carregado com sucesso!")
+	} else {
+		fmt.Println("Site:", site, "está com problemas. Status code:", resp.StatusCode)
+	}
 }
